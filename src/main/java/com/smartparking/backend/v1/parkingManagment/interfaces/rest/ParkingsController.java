@@ -27,13 +27,13 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/api/v1/parking", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/parkings", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Parking", description = "Parking management")
-public class ParkingController {
+public class ParkingsController {
     private final ParkingCommandService parkingCommandService;
     private final ParkingQueryService parkingQueryService;
 
-    public ParkingController(ParkingCommandService parkingCommandService, ParkingQueryService parkingQueryService) {
+    public ParkingsController(ParkingCommandService parkingCommandService, ParkingQueryService parkingQueryService) {
         this.parkingCommandService = parkingCommandService;
         this.parkingQueryService = parkingQueryService;
     }
@@ -74,7 +74,7 @@ public class ParkingController {
             @ApiResponse(responseCode = "200", description = "Parkings retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Parking not found")
     })
-    @GetMapping("/{parkingId}")
+    @GetMapping("/{parkingId}/spots")
     public ResponseEntity<List<ParkingSpotResource>> getParkingSpotsByParkingId(@PathVariable Long parkingId) {
         var query = new GetParkingSpotsByParkingIdQuery(parkingId);
         List<ParkingSpot> spots = this.parkingQueryService.handle(query);
