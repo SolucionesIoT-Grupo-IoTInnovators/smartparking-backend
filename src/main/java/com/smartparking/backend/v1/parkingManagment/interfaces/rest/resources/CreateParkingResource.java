@@ -5,6 +5,8 @@ public record CreateParkingResource(
         String name,
         String description,
         String address,
+        Double lat,
+        Double lng,
         Float ratePerHour,
         Integer totalSpots,
         Integer availableSpots,

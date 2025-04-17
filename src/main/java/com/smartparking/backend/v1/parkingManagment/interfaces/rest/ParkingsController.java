@@ -26,6 +26,7 @@ import java.util.Optional;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/v1/parkings", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Parking", description = "Parking management")

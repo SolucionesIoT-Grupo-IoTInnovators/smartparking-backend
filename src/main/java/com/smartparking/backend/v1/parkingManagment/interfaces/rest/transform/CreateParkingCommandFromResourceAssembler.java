@@ -10,6 +10,8 @@ public class CreateParkingCommandFromResourceAssembler {
                 resource.name(),
                 resource.description(),
                 resource.address(),
+                resource.lat(),
+                resource.lng(),
                 resource.ratePerHour(),
                 resource.totalSpots(),
                 resource.availableSpots(),

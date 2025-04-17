@@ -35,6 +35,14 @@ public class Parking extends AuditableAbstractAggregateRoot<Parking> {
     private String address;
 
     @Getter
+    @NotNull
+    private Double lat;
+
+    @Getter
+    @NotNull
+    private Double lng;
+
+    @Getter
     @Setter
     @NotNull
     private Float ratePerHour;
@@ -78,6 +86,8 @@ public class Parking extends AuditableAbstractAggregateRoot<Parking> {
         this.name = command.name();
         this.description = command.description();
         this.address = command.address();
+        this.lat = command.lat();
+        this.lng = command.lng();
         this.ratePerHour = command.ratePerHour();
         this.rating = 0f;
         this.totalSpots = command.totalSpots();
