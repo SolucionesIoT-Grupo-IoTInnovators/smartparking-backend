@@ -2,6 +2,7 @@ package com.smartparking.backend.v1.parkingManagment.interfaces.rest;
 
 import com.smartparking.backend.v1.parkingManagment.domain.model.aggregates.Parking;
 import com.smartparking.backend.v1.parkingManagment.domain.model.entities.ParkingSpot;
+import com.smartparking.backend.v1.parkingManagment.domain.model.queries.GetParkingByIdQuery;
 import com.smartparking.backend.v1.parkingManagment.domain.model.queries.GetParkingSpotsByParkingIdQuery;
 import com.smartparking.backend.v1.parkingManagment.domain.services.ParkingCommandService;
 import com.smartparking.backend.v1.parkingManagment.domain.services.ParkingQueryService;
@@ -87,5 +88,20 @@ public class ParkingsController {
                 .map(ParkingSpotResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
         return new ResponseEntity<>(parkingSpotResources, CREATED);
+    }
+
+    @Operation(summary = "Get parking by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Parking retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Parking not found")
+    })
+    @GetMapping("/{parkingId}")
+    public ResponseEntity<ParkingResource> getParkingById(@PathVariable Long parkingId) {
+        var query = new GetParkingByIdQuery(parkingId);
+        Optional<Parking> parking = this.parkingQueryService.handle(query);
+
+        return parking.map(source ->
+                        new ResponseEntity<>(ParkingResourceFromEntityAssembler.toResourceFromEntity(source), CREATED))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

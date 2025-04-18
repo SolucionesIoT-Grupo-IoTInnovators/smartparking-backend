@@ -11,6 +11,8 @@ public class ParkingResourceFromEntityAssembler {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getAddress(),
+                entity.getLat(),
+                entity.getLng(),
                 entity.getRatePerHour(),
                 entity.getRating(),
                 entity.getTotalSpots(),

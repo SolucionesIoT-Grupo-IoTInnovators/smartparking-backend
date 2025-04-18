@@ -6,6 +6,8 @@ public record ParkingResource(
         String name,
         String description,
         String address,
+        Double lat,
+        Double lng,
         Float ratePerHour,
         Float rating,
         Integer totalSpots,
