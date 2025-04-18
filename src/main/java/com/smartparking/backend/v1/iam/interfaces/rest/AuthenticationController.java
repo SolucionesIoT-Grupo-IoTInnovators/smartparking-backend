@@ -57,9 +57,9 @@ public class AuthenticationController {
      * @param signUpDriverResource the sign-up request body.
      * @return the created user resource.
      */
-    @Operation(summary = "Create Agricultural Producer")
+    @Operation(summary = "Create Driver")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Agricultural Producer created"),
+            @ApiResponse(responseCode = "201", description = "Driver created"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
     })
     @PostMapping("/sign-up/driver")
@@ -78,9 +78,9 @@ public class AuthenticationController {
      * @param signUpParkingOwnerResource the sign-up request body.
      * @return the created user resource.
      */
-    @Operation(summary = "Create Distributor")
+    @Operation(summary = "Create Parking Owner")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Distributor created"),
+            @ApiResponse(responseCode = "201", description = "Parking Owner created"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
     })
     @PostMapping("/sign-up/parking-owner")
