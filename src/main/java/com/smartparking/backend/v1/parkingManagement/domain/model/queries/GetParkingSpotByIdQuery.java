@@ -1,4 +1,4 @@
-package com.smartparking.backend.v1.parkingManagment.domain.model.queries;
+package com.smartparking.backend.v1.parkingManagement.domain.model.queries;
 
 import java.util.UUID;
 
