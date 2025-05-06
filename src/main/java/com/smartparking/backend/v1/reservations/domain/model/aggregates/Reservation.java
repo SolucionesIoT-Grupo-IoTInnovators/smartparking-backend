@@ -1,5 +1,6 @@
 package com.smartparking.backend.v1.reservations.domain.model.aggregates;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smartparking.backend.v1.reservations.domain.model.commands.CreateReservationCommand;
 import com.smartparking.backend.v1.reservations.domain.model.valueobjects.DriverId;
 import com.smartparking.backend.v1.reservations.domain.model.valueobjects.ParkingId;
@@ -11,7 +12,9 @@ import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 public class Reservation extends AuditableAbstractAggregateRoot<Reservation> {
@@ -30,10 +33,13 @@ public class Reservation extends AuditableAbstractAggregateRoot<Reservation> {
     private ParkingSpotId parkingSpotId;
 
     @Getter
-    private LocalDateTime startTime;
+    private LocalDate date;
 
     @Getter
-    private LocalDateTime endTime;
+    private LocalTime startTime;
+
+    @Getter
+    private LocalTime endTime;
 
     @Getter
     private Float totalPrice;
@@ -48,15 +54,16 @@ public class Reservation extends AuditableAbstractAggregateRoot<Reservation> {
         this.vehiclePlate = command.vehiclePlate();
         this.parkingId = new ParkingId(command.parkingId());
         this.parkingSpotId = new ParkingSpotId(command.parkingSpotId());
-        this.startTime = command.startTime();
-        this.endTime = command.endTime();
+        this.date = command.date();
+        this.startTime = LocalTime.parse(command.startTime());
+        this.endTime = LocalTime.parse(command.endTime());
         this.totalPrice = calculateTotalPrice(pricePerHour);
         this.status = ReservationStatus.PENDING;
     }
 
     private Float calculateTotalPrice(Float pricePerHour) {
-        long hours = java.time.Duration.between(startTime, endTime).toHours();
-        return hours * pricePerHour;
+        long minutes = java.time.Duration.between(startTime, endTime).toMinutes();
+        return (minutes / 60.0f) * pricePerHour;
     }
 
     public void confirm() {

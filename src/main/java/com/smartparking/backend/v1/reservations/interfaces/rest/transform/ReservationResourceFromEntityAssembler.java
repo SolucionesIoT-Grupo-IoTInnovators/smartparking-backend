@@ -11,6 +11,7 @@ public class ReservationResourceFromEntityAssembler {
                 entity.getVehiclePlate(),
                 entity.getParkingId(),
                 entity.getParkingSpotId(),
+                entity.getDate().toString(),
                 entity.getStartTime().toString(),
                 entity.getEndTime().toString(),
                 entity.getTotalPrice(),

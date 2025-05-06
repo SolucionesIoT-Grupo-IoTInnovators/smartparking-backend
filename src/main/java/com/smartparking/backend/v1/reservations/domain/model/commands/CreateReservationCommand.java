@@ -1,6 +1,8 @@
 package com.smartparking.backend.v1.reservations.domain.model.commands;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
 public record CreateReservationCommand(
@@ -8,12 +10,8 @@ public record CreateReservationCommand(
         String vehiclePlate,
         Long parkingId,
         UUID parkingSpotId,
-        LocalDateTime startTime,
-        LocalDateTime endTime
+        LocalDate date,
+        String startTime,
+        String endTime
 ) {
-    public CreateReservationCommand {
-        if (startTime.isAfter(endTime)) {
-            throw new IllegalArgumentException("Start time must be before end time");
-        }
-    }
 }

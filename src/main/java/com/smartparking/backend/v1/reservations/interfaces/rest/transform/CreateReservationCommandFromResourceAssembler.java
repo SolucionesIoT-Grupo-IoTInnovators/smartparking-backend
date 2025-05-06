@@ -10,6 +10,7 @@ public class CreateReservationCommandFromResourceAssembler {
                 resource.vehiclePlate(),
                 resource.parkingId(),
                 resource.parkingSpotId(),
+                resource.date(),
                 resource.startTime(),
                 resource.endTime()
         );
