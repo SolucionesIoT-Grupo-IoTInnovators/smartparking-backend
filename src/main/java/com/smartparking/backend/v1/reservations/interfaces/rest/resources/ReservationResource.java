@@ -2,6 +2,7 @@ package com.smartparking.backend.v1.reservations.interfaces.rest.resources;
 
 public record ReservationResource(
         Long id,
+        String driverFullName,
         Long driverId,
         String vehiclePlate,
         Long parkingId,
