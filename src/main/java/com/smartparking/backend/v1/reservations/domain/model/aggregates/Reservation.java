@@ -23,6 +23,9 @@ public class Reservation extends AuditableAbstractAggregateRoot<Reservation> {
     private DriverId driverId;
 
     @Getter
+    private String driverName;
+
+    @Getter
     @NotNull
     private String vehiclePlate;
 
@@ -43,13 +46,13 @@ public class Reservation extends AuditableAbstractAggregateRoot<Reservation> {
 
     @Getter
     private Float totalPrice;
-
-    @Embedded
+    
     private ReservationStatus status;
 
     protected Reservation() {}
 
-    public Reservation(CreateReservationCommand command, Float pricePerHour) {
+    public Reservation(CreateReservationCommand command, String driverName, Float pricePerHour) {
+        this.driverName = driverName;
         this.driverId = new DriverId(command.driverId());
         this.vehiclePlate = command.vehiclePlate();
         this.parkingId = new ParkingId(command.parkingId());
