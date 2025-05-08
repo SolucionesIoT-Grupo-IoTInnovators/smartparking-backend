@@ -4,7 +4,7 @@ public record CreateReviewCommand(
         Long driverId,
         Long parkingId,
         String comment,
-        Integer rating
+        Float rating
 ) {
     public CreateReviewCommand {
         if (driverId == null || driverId <= 0) {
