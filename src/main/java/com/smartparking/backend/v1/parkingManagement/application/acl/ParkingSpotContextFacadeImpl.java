@@ -66,13 +66,4 @@ public class ParkingSpotContextFacadeImpl implements ParkingSpotContextFacade {
             throw new IllegalStateException("Parking not found");
         }
     }
-
-    @Override
-    public void updateParkingRatingCount(Long parkingId, Float ratingCount) {
-        var command = new UpdateParkingRatingCountCommand(parkingId, ratingCount);
-        var parking = parkingCommandService.handle(command);
-        if (parking.isEmpty()) {
-            throw new IllegalStateException("Parking not found");
-        }
-    }
 }

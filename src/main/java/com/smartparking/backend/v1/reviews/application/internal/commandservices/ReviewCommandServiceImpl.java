@@ -36,7 +36,6 @@ public class ReviewCommandServiceImpl implements ReviewCommandService {
         var savedReview = reviewRepository.save(review);
         if (savedReview.getId() != null) {
             externalParkingService.updateParkingRating(command.parkingId(), command.rating());
-            externalParkingService.updateParkingRatingCount(command.parkingId(), 1f);
 
             return Optional.of(savedReview);
         }

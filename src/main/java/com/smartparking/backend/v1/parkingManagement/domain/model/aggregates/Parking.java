@@ -106,7 +106,9 @@ public class Parking extends AuditableAbstractAggregateRoot<Parking> {
         this.parkingSpotManager = new SpotManager();
     }
 
-    public void setAverageRating() {
+    public void setRating(Float rating) {
+        this.rating += rating;
+        this.ratingCount += 1;
         this.averageRating = this.rating / this.ratingCount;
     }
 

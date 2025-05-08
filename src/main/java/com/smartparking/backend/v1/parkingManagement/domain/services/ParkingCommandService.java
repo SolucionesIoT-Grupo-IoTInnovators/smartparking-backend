@@ -17,6 +17,4 @@ public interface ParkingCommandService {
     Optional<String> handle(UpdateAvailableParkingSpotCountCommand command);
 
     Optional<String> handle(UpdateParkingRatingCommand command);
-
-    Optional<String> handle(UpdateParkingRatingCountCommand command);
 }
