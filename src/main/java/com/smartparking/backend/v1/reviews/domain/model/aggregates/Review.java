@@ -22,14 +22,14 @@ public class Review extends AuditableAbstractAggregateRoot<Review> {
     @Embedded
     private ParkingId parkingId;
 
-    @Embedded
+    @Getter
     private String parkingName;
 
     @Getter
     private String comment;
 
     @Getter
-    private Integer rating;
+    private Float rating;
 
     protected Review() {}
 
