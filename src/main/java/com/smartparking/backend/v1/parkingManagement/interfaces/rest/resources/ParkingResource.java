@@ -10,6 +10,7 @@ public record ParkingResource(
         Double lng,
         Float ratePerHour,
         Float rating,
+        Float ratingCount,
         Integer totalSpots,
         Integer availableSpots,
         Integer totalRows,

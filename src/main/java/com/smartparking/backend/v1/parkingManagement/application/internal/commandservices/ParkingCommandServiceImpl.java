@@ -1,10 +1,7 @@
 package com.smartparking.backend.v1.parkingManagement.application.internal.commandservices;
 
 import com.smartparking.backend.v1.parkingManagement.domain.model.aggregates.Parking;
-import com.smartparking.backend.v1.parkingManagement.domain.model.commands.AddParkingSpotCommand;
-import com.smartparking.backend.v1.parkingManagement.domain.model.commands.CreateParkingCommand;
-import com.smartparking.backend.v1.parkingManagement.domain.model.commands.UpdateAvailableParkingSpotCountCommand;
-import com.smartparking.backend.v1.parkingManagement.domain.model.commands.UpdateParkingSpotAvailabilityCommand;
+import com.smartparking.backend.v1.parkingManagement.domain.model.commands.*;
 import com.smartparking.backend.v1.parkingManagement.domain.model.entities.ParkingSpot;
 import com.smartparking.backend.v1.parkingManagement.domain.services.ParkingCommandService;
 import com.smartparking.backend.v1.parkingManagement.infrastructure.persistence.jpa.repositories.ParkingRepository;
@@ -70,5 +67,33 @@ public class ParkingCommandServiceImpl implements ParkingCommandService {
         var newAvailableCount = parking.getAvailableSpots();
 
         return Optional.of("Available parking spots count updated to " + newAvailableCount);
+    }
+
+    @Override
+    public Optional<String> handle(UpdateParkingRatingCommand command) {
+        var parking = this.parkingRepository.findById(command.parkingId())
+                .orElseThrow(() -> new IllegalArgumentException("Parking not found"));
+
+        parking.setRating(parking.getRating() + command.rating());
+
+        var updatedParking = parkingRepository.save(parking);
+
+        updatedParking.setAverageRating();
+
+        return Optional.of("Parking rating updated to " + updatedParking.getRating());
+    }
+
+    @Override
+    public Optional<String> handle(UpdateParkingRatingCountCommand command) {
+        var parking = this.parkingRepository.findById(command.parkingId())
+                .orElseThrow(() -> new IllegalArgumentException("Parking not found"));
+
+        parking.setRatingCount(parking.getRatingCount() + command.ratingCount());
+
+        var updatedParking = parkingRepository.save(parking);
+
+        updatedParking.setAverageRating();
+
+        return Optional.of("Parking rating count updated to " + updatedParking.getRatingCount());
     }
 }

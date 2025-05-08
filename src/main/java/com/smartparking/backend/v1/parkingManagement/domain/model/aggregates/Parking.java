@@ -52,6 +52,13 @@ public class Parking extends AuditableAbstractAggregateRoot<Parking> {
 
     @Getter
     @Setter
+    private Float ratingCount;
+
+    @Getter
+    private Float averageRating;
+
+    @Getter
+    @Setter
     @NotNull
     private Integer totalSpots;
 
@@ -89,12 +96,18 @@ public class Parking extends AuditableAbstractAggregateRoot<Parking> {
         this.lng = command.lng();
         this.ratePerHour = command.ratePerHour();
         this.rating = 0f;
+        this.ratingCount = 0f;
+        this.averageRating = 0f;
         this.totalSpots = command.totalSpots();
         this.availableSpots = command.availableSpots();
         this.totalRows = command.totalRows();
         this.totalColumns = command.totalColumns();
         this.imageUrl = command.imageUrl();
         this.parkingSpotManager = new SpotManager();
+    }
+
+    public void setAverageRating() {
+        this.averageRating = this.rating / this.ratingCount;
     }
 
     public void addParkingSpot(AddParkingSpotCommand command) {
