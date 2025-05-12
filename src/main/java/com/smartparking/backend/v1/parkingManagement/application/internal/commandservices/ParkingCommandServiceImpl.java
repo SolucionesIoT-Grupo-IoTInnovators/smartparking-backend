@@ -74,26 +74,10 @@ public class ParkingCommandServiceImpl implements ParkingCommandService {
         var parking = this.parkingRepository.findById(command.parkingId())
                 .orElseThrow(() -> new IllegalArgumentException("Parking not found"));
 
-        parking.setRating(parking.getRating() + command.rating());
+        parking.setRating(command.rating());
 
         var updatedParking = parkingRepository.save(parking);
-
-        updatedParking.setAverageRating();
 
         return Optional.of("Parking rating updated to " + updatedParking.getRating());
-    }
-
-    @Override
-    public Optional<String> handle(UpdateParkingRatingCountCommand command) {
-        var parking = this.parkingRepository.findById(command.parkingId())
-                .orElseThrow(() -> new IllegalArgumentException("Parking not found"));
-
-        parking.setRatingCount(parking.getRatingCount() + command.ratingCount());
-
-        var updatedParking = parkingRepository.save(parking);
-
-        updatedParking.setAverageRating();
-
-        return Optional.of("Parking rating count updated to " + updatedParking.getRatingCount());
     }
 }

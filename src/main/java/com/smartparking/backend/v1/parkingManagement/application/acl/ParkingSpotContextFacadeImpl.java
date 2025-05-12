@@ -32,6 +32,15 @@ public class ParkingSpotContextFacadeImpl implements ParkingSpotContextFacade {
     }
 
     @Override
+    public String getParkingName(Long parkingId) {
+        var parking = parkingQueryService.handle(new GetParkingByIdQuery(parkingId));
+        if (parking.isEmpty()) {
+            throw new IllegalStateException("Parking not found");
+        }
+        return parking.get().getName();
+    }
+
+    @Override
     public void updateAvailableParkingSpotCount(Long parkingId, Integer numberAvailable, String operation) {
         var command = new UpdateAvailableParkingSpotCountCommand(parkingId, numberAvailable, operation);
         var parking = parkingCommandService.handle(command);
@@ -52,15 +61,6 @@ public class ParkingSpotContextFacadeImpl implements ParkingSpotContextFacade {
     @Override
     public void updateParkingRating(Long parkingId, Float rating) {
         var command = new UpdateParkingRatingCommand(parkingId, rating);
-        var parking = parkingCommandService.handle(command);
-        if (parking.isEmpty()) {
-            throw new IllegalStateException("Parking not found");
-        }
-    }
-
-    @Override
-    public void updateParkingRatingCount(Long parkingId, Float ratingCount) {
-        var command = new UpdateParkingRatingCountCommand(parkingId, ratingCount);
         var parking = parkingCommandService.handle(command);
         if (parking.isEmpty()) {
             throw new IllegalStateException("Parking not found");
