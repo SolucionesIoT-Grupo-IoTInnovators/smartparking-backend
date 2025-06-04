@@ -25,11 +25,12 @@ public class ReservationCommandServiceImpl implements ReservationCommandService 
     @Override
     public Optional<Reservation> handle(CreateReservationCommand command) {
         var driverFullName = externalProfileServiceReservation.getDriverFullNameByUserId(command.driverId());
+        var parkingSpotLabel = externalParkingService.getSpotLabel(command.parkingSpotId(), command.parkingId());
         var parkingRatePerHour = externalParkingService.getParkingRatePerHour(command.parkingId());
         if (parkingRatePerHour == null) {
             return Optional.empty();
         }
-        var reservation = new Reservation(command, driverFullName, parkingRatePerHour);
+        var reservation = new Reservation(command, driverFullName, parkingRatePerHour, parkingSpotLabel);
         var savedReservation = reservationRepository.save(reservation);
         externalParkingService.updateParkingSpotAvailability(command.parkingId(), command.parkingSpotId(), "RESERVED");
         externalParkingService.updateAvailableSpotsCount(command.parkingId(), 1, "subtract");

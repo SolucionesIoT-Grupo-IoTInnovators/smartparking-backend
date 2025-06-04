@@ -7,6 +7,7 @@ public record ReservationResource(
         String vehiclePlate,
         Long parkingId,
         String parkingSpotId,
+        String spotLabel,
         String date,
         String startTime,
         String endTime,

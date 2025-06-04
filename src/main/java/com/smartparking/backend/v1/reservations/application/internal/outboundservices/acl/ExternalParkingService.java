@@ -17,6 +17,10 @@ public class ExternalParkingService {
         return this.parkingSpotContextFacade.getParkingRatePerHour(parkingId);
     }
 
+    public String getSpotLabel(UUID parkingSpotId, Long parkingId) {
+        return this.parkingSpotContextFacade.getSpotLabel(parkingSpotId, parkingId);
+    }
+
     public void updateParkingSpotAvailability(Long parkingId, UUID parkingSpotId, String availability) {
         this.parkingSpotContextFacade.updateParkingSpotAvailability(parkingId, parkingSpotId, availability);
     }

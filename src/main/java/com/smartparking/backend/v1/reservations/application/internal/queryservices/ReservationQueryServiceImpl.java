@@ -3,6 +3,8 @@ package com.smartparking.backend.v1.reservations.application.internal.queryservi
 import com.smartparking.backend.v1.reservations.domain.model.aggregates.Reservation;
 import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByDriverIdQuery;
 import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByParkingIdQuery;
+import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByDriverIdAndStatusQuery;
+import com.smartparking.backend.v1.reservations.domain.model.valueobjects.ReservationStatus;
 import com.smartparking.backend.v1.reservations.domain.services.ReservationQueryService;
 import com.smartparking.backend.v1.reservations.infrastructure.persistence.jpa.repositories.ReservationRepository;
 import org.springframework.stereotype.Service;
@@ -25,5 +27,11 @@ public class ReservationQueryServiceImpl implements ReservationQueryService {
     @Override
     public List<Reservation> handle(GetAllReservationsByDriverIdQuery query) {
         return reservationRepository.findReservationsByDriverIdDriverId(query.driverId());
+    }
+
+    @Override
+    public List<Reservation> handle(GetAllReservationsByDriverIdAndStatusQuery query) {
+        var reservationStatus = ReservationStatus.valueOf(query.status());
+        return reservationRepository.findReservationsByDriverIdDriverIdAndStatus(query.driverId(), reservationStatus);
     }
 }

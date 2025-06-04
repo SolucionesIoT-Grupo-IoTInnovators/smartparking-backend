@@ -41,6 +41,16 @@ public class ParkingSpotContextFacadeImpl implements ParkingSpotContextFacade {
     }
 
     @Override
+    public String getSpotLabel(UUID parkingSpotId, Long parkingId) {
+        var parking = parkingQueryService.handle(new GetParkingByIdQuery(parkingId));
+        if (parking.isEmpty()) {
+            throw new IllegalStateException("Parking not found");
+        }
+        var spot = parking.get().getParkingSpot(parkingSpotId);
+        return spot.getLabel();
+    }
+
+    @Override
     public void updateAvailableParkingSpotCount(Long parkingId, Integer numberAvailable, String operation) {
         var command = new UpdateAvailableParkingSpotCountCommand(parkingId, numberAvailable, operation);
         var parking = parkingCommandService.handle(command);
