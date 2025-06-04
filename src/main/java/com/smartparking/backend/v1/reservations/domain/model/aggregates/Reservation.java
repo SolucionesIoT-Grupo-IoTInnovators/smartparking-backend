@@ -36,6 +36,9 @@ public class Reservation extends AuditableAbstractAggregateRoot<Reservation> {
     private ParkingSpotId parkingSpotId;
 
     @Getter
+    private String spotLabel;
+
+    @Getter
     private LocalDate date;
 
     @Getter
@@ -51,12 +54,14 @@ public class Reservation extends AuditableAbstractAggregateRoot<Reservation> {
 
     protected Reservation() {}
 
-    public Reservation(CreateReservationCommand command, String driverName, Float pricePerHour) {
+    public Reservation(CreateReservationCommand command, String driverName, Float pricePerHour,
+                       String spotLabel) {
         this.driverName = driverName;
         this.driverId = new DriverId(command.driverId());
         this.vehiclePlate = command.vehiclePlate();
         this.parkingId = new ParkingId(command.parkingId());
         this.parkingSpotId = new ParkingSpotId(command.parkingSpotId());
+        this.spotLabel = spotLabel;
         this.date = command.date();
         this.startTime = LocalTime.parse(command.startTime());
         this.endTime = LocalTime.parse(command.endTime());

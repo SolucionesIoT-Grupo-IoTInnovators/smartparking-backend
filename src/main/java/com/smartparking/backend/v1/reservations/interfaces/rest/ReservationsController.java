@@ -2,6 +2,7 @@ package com.smartparking.backend.v1.reservations.interfaces.rest;
 
 import com.smartparking.backend.v1.reservations.domain.model.aggregates.Reservation;
 import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByParkingIdQuery;
+import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByDriverIdAndStatusQuery;
 import com.smartparking.backend.v1.reservations.domain.services.ReservationCommandService;
 import com.smartparking.backend.v1.reservations.domain.services.ReservationQueryService;
 import com.smartparking.backend.v1.reservations.interfaces.rest.resources.CreateReservationResource;
@@ -56,6 +57,27 @@ public class ReservationsController {
     @GetMapping("/parking/{parkingId}")
     public ResponseEntity<List<ReservationResource>> getReservationsByParkingId(@PathVariable Long parkingId) {
         var query = new GetAllReservationsByParkingIdQuery(parkingId);
+        List<Reservation> reservations = this.reservationQueryService.handle(query);
+
+        if (reservations.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<ReservationResource> resources = reservations.stream()
+                .map(ReservationResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(resources);
+    }
+
+    @Operation(summary = "Get all reservations by driver id and status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reservations retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No reservations found")
+    })
+    @GetMapping("/driver/{driverId}/status/{status}")
+    public ResponseEntity<List<ReservationResource>> getReservationsByDriverIdAndStatus(
+            @PathVariable Long driverId, @PathVariable String status) {
+        var query = new GetAllReservationsByDriverIdAndStatusQuery(driverId, status);
         List<Reservation> reservations = this.reservationQueryService.handle(query);
 
         if (reservations.isEmpty()) {
