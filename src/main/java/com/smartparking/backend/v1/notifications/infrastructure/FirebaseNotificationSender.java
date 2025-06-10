@@ -23,9 +23,9 @@ public class FirebaseNotificationSender implements NotificationRepository {
                 .build();
         try {
             String response = FirebaseMessaging.getInstance().send(firebaseMessage);
-            System.out.println("✅ Notificación enviada. ID: " + response);
+            System.out.println("Notificación enviada. ID: " + response);
         } catch (Exception e) {
-            System.err.println("❌ Error al enviar notificación:");
+            System.err.println("Error al enviar notificación:");
             e.printStackTrace();
         }
     }
