@@ -3,12 +3,14 @@ package com.smartparking.backend.v1.deviceManagement.interfaces.rest;
 import com.smartparking.backend.v1.deviceManagement.domain.model.aggregates.Device;
 import com.smartparking.backend.v1.deviceManagement.domain.model.queries.GetDeviceByParkingSpotIdQuery;
 import com.smartparking.backend.v1.deviceManagement.domain.model.queries.GetDevicesByEdgeServerIdQuery;
+import com.smartparking.backend.v1.deviceManagement.domain.model.queries.GetDevicesByParkingIdQuery;
+import com.smartparking.backend.v1.deviceManagement.domain.model.queries.GetUnassignedDevicesByParkingIdQuery;
 import com.smartparking.backend.v1.deviceManagement.domain.services.DeviceCommandService;
 import com.smartparking.backend.v1.deviceManagement.domain.services.DeviceQueryService;
-import com.smartparking.backend.v1.deviceManagement.interfaces.rest.resources.CreateDeviceResource;
 import com.smartparking.backend.v1.deviceManagement.interfaces.rest.resources.DeviceResource;
-import com.smartparking.backend.v1.deviceManagement.interfaces.rest.transform.CreateDeviceCommandFromResourceAssembler;
+import com.smartparking.backend.v1.deviceManagement.interfaces.rest.resources.UpdateDeviceResource;
 import com.smartparking.backend.v1.deviceManagement.interfaces.rest.transform.DeviceResourceFromEntityAssembler;
+import com.smartparking.backend.v1.deviceManagement.interfaces.rest.transform.UpdateDeviceCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -35,19 +37,41 @@ public class DevicesController {
         this.deviceQueryService = deviceQueryService;
     }
 
-    @Operation(summary = "Create a new device")
+    @Operation(summary = "Update a device")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Device created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request data")
+            @ApiResponse(responseCode = "200", description = "Device updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Device not found")
     })
-    @PostMapping
-    public ResponseEntity<DeviceResource> createDevice(@RequestBody CreateDeviceResource resource) {
-        Optional<Device> device = this.deviceCommandService
-                .handle(CreateDeviceCommandFromResourceAssembler.toCommandFromResource(resource));
+    @PutMapping("/{deviceId}")
+    public ResponseEntity<DeviceResource> updateDevice(@PathVariable UUID deviceId, @RequestBody UpdateDeviceResource deviceResource) {
+        Optional<Device> updatedDevice = this.deviceCommandService.handle(
+                UpdateDeviceCommandFromResourceAssembler.toCommandFromResource(deviceResource, deviceId));
+        if (updatedDevice.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return updatedDevice.map(device ->
+                ResponseEntity.ok(DeviceResourceFromEntityAssembler.toResourceFromEntity(device)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
-        return device.map(source->
-                        new ResponseEntity<>(DeviceResourceFromEntityAssembler.toResourceFromEntity(source), CREATED))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+    @Operation(summary = "Get devices by parking id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Devices retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No devices found for the given parking id")
+    })
+    @GetMapping("/parking/{parkingId}")
+    public ResponseEntity<List<DeviceResource>> getDevicesByParkingId(@PathVariable Long parkingId) {
+        var query = new GetDevicesByParkingIdQuery(parkingId);
+        List<Device> devices = this.deviceQueryService.handle(query);
+
+        if (devices.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<DeviceResource> resources = devices.stream()
+                .map(DeviceResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(resources);
     }
 
     @Operation(summary = "Get device by parking spot id")
@@ -70,14 +94,34 @@ public class DevicesController {
             @ApiResponse(responseCode = "404", description = "No devices found")
     })
     @GetMapping("/edge-server/{edgeServerId}")
-    public ResponseEntity<List<DeviceResource>> getDevicesByEdgeServerId(@PathVariable Long edgeServerId) {
+    public ResponseEntity<List<DeviceResource>> getDevicesByEdgeServerId(@PathVariable String edgeServerId) {
         var query = new GetDevicesByEdgeServerIdQuery(edgeServerId);
         List<Device> devices = this.deviceQueryService.handle(query);
-        
+
         if (devices.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
+
+        List<DeviceResource> resources = devices.stream()
+                .map(DeviceResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(resources);
+    }
+
+    @Operation(summary = "Get unassigned devices by parking id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Unassigned devices retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No unassigned devices found for the given parking id")
+    })
+    @GetMapping("/unassigned/{parkingId}")
+    public ResponseEntity<List<DeviceResource>> getUnassignedDevicesByParkingId(@PathVariable Long parkingId) {
+        var query = new GetUnassignedDevicesByParkingIdQuery(parkingId);
+        List<Device> devices = this.deviceQueryService.handle(query);
+
+        if (devices.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
         List<DeviceResource> resources = devices.stream()
                 .map(DeviceResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();

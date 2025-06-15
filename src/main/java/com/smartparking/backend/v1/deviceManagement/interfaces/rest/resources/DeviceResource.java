@@ -8,8 +8,10 @@ public record DeviceResource(
         String type,
         String operationalStatus,
         String spotStatus,
-        String lastCommunication,
+        String spotLabel,
         String parkingSpotId,
-        Long edgeServerId
+        Long parkingId,
+        String edgeServerId,
+        String lastCommunication
 ) {
 }

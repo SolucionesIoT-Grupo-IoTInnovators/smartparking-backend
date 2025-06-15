@@ -20,6 +20,9 @@ public class EdgeServerCommandServiceImpl implements EdgeServerCommandService {
 
     @Override
     public Optional<EdgeServer> handle(CreateEdgeServerCommand command) {
+        if (edgeServerRepository.existsByServerId(command.serverId())) {
+            throw new IllegalArgumentException("Edge server with this serverId already exists");
+        }
         EdgeServer edgeServer = new EdgeServer(command);
         return Optional.of(edgeServerRepository.save(edgeServer));
     }

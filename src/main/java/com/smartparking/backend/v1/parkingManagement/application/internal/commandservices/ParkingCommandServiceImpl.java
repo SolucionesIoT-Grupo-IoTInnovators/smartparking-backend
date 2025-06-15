@@ -1,5 +1,6 @@
 package com.smartparking.backend.v1.parkingManagement.application.internal.commandservices;
 
+import com.smartparking.backend.v1.parkingManagement.application.internal.outboundservices.acl.ExternalDeviceService;
 import com.smartparking.backend.v1.parkingManagement.domain.model.aggregates.Parking;
 import com.smartparking.backend.v1.parkingManagement.domain.model.commands.*;
 import com.smartparking.backend.v1.parkingManagement.domain.model.entities.ParkingSpot;
@@ -13,9 +14,11 @@ import java.util.Optional;
 public class ParkingCommandServiceImpl implements ParkingCommandService {
 
     private final ParkingRepository parkingRepository;
+    private final ExternalDeviceService externalDeviceService;
 
-    public ParkingCommandServiceImpl(ParkingRepository parkingRepository) {
+    public ParkingCommandServiceImpl(ParkingRepository parkingRepository, ExternalDeviceService externalDeviceService) {
         this.parkingRepository = parkingRepository;
+        this.externalDeviceService = externalDeviceService;
     }
 
     @Override
@@ -30,8 +33,10 @@ public class ParkingCommandServiceImpl implements ParkingCommandService {
         var parking = this.parkingRepository.findById(command.parkingId())
                 .orElseThrow(() -> new IllegalArgumentException("Parking not found"));
 
-        parking.addParkingSpot(command);
+        var spot = parking.addParkingSpot(command);
         var updatedParking = parkingRepository.save(parking);
+        // Create a device for the new parking spot
+        externalDeviceService.createDevice(command.parkingId(), spot.getId(), spot.getStatus(), spot.getLabel());
         return updatedParking.getParkingSpots().stream()
                 .filter(parkingSpot -> parkingSpot.getParkingId().equals(command.parkingId()))
                 .findFirst();

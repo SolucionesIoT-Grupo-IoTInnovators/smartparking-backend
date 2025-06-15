@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 public record EdgeServerResource(
         Long id,
+        String serverId,
+        String apiKey,
         String name,
         String ipAddress,
         String status,

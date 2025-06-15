@@ -8,6 +8,8 @@ public class EdgeServerResourceFromEntityAssembler {
     public static EdgeServerResource toResourceFromEntity(EdgeServer entity) {
         return new EdgeServerResource(
                 entity.getId(),
+                entity.getServerId(),
+                entity.getApiKey(),
                 entity.getName(),
                 entity.getIpAddress(),
                 entity.getStatus().name(),

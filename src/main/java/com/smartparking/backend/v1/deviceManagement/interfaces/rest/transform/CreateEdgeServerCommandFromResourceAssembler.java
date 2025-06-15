@@ -7,8 +7,11 @@ public class CreateEdgeServerCommandFromResourceAssembler {
 
     public static CreateEdgeServerCommand toCommandFromResource(CreateEdgeServerResource resource) {
         return new CreateEdgeServerCommand(
+                resource.serverId(),
+                resource.apiKey(),
                 resource.name(),
                 resource.ipAddress(),
+                resource.status(),
                 resource.parkingId()
         );
     }

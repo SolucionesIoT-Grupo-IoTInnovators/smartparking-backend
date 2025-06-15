@@ -22,9 +22,10 @@ public class SpotManager {
         this.parkingSpots = new ArrayList<>();
     }
 
-    public void addParkingSpot(Parking parking, Integer row, Integer column, String label) {
+    public ParkingSpot addParkingSpot(Parking parking, Integer row, Integer column, String label) {
         ParkingSpot parkingSpot = new ParkingSpot(parking, row, column, label);
         this.parkingSpots.add(parkingSpot);
+        return parkingSpot;
     }
 
     public void removeParkingSpot(UUID parkingSpotId) {

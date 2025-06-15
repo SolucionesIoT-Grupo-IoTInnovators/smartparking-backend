@@ -9,5 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface EdgeServerRepository extends JpaRepository<EdgeServer, Long> {
+    boolean existsByServerId(String serverId);
     List<EdgeServer> findByParkingIdParkingId(Long parkingId);
 }

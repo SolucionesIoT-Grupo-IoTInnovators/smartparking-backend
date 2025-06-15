@@ -5,9 +5,6 @@ import com.smartparking.backend.v1.deviceManagement.domain.model.valueobjects.De
 import java.util.UUID;
 
 public record CreateDeviceCommand(
-        String macAddress,
-        DeviceType type,
-        UUID parkingSpotId,
-        Long edgeServerId
+        Long parkingId, UUID parkingSpotId, String spotStatus, String spotLabel
 ) {
 }

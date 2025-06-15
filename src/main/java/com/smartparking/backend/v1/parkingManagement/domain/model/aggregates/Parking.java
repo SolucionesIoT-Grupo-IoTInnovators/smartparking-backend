@@ -112,8 +112,8 @@ public class Parking extends AuditableAbstractAggregateRoot<Parking> {
         this.averageRating = this.rating / this.ratingCount;
     }
 
-    public void addParkingSpot(AddParkingSpotCommand command) {
-        parkingSpotManager.addParkingSpot(this, command.row(), command.column(), command.label());
+    public ParkingSpot addParkingSpot(AddParkingSpotCommand command) {
+       return parkingSpotManager.addParkingSpot(this, command.row(), command.column(), command.label());
     }
 
     public List<ParkingSpot> getParkingSpots() {

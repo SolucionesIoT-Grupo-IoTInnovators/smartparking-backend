@@ -19,6 +19,14 @@ public class EdgeServer extends AuditableAbstractAggregateRoot<EdgeServer> {
 
     @Getter
     @NotNull
+    private String serverId;
+
+    @Getter
+    @NotNull
+    private String apiKey;
+
+    @Getter
+    @NotNull
     private String name;
 
     @Getter
@@ -44,9 +52,11 @@ public class EdgeServer extends AuditableAbstractAggregateRoot<EdgeServer> {
     protected EdgeServer() {}
 
     public EdgeServer(CreateEdgeServerCommand command) {
+        this.serverId = command.serverId();
+        this.apiKey = command.apiKey();
         this.name = command.name();
         this.ipAddress = command.ipAddress();
-        this.status = EdgeServerStatus.OFFLINE;
+        this.status = EdgeServerStatus.valueOf(command.status());
         this.lastHeartbeat = LocalDateTime.now();
         this.connectedDevicesCount = 0;
         this.parkingId = new ParkingId(command.parkingId());

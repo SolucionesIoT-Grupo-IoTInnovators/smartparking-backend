@@ -12,9 +12,11 @@ public class DeviceResourceFromEntityAssembler {
                 entity.getType(),
                 entity.getOperationalStatus(),
                 entity.getSpotStatus(),
-                entity.getLastCommunication(),
+                entity.getSpotLabel(),
                 entity.parkingSpotId(),
-                entity.edgeServerId()
+                entity.getParkingId(),
+                entity.edgeServerId(),
+                entity.getLastCommunication()
         );
     }
 }
