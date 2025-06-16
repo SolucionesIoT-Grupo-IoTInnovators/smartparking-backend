@@ -23,7 +23,7 @@ public class DeviceQueryServiceImpl implements DeviceQueryService {
 
     @Override
     public List<Device> handle(GetDevicesByParkingIdQuery query) {
-        return deviceRepository.findByParkingIdParkingId(query.parkingId());
+        return deviceRepository.findByParkingId_ParkingId(query.parkingId());
     }
 
     @Override
@@ -33,7 +33,7 @@ public class DeviceQueryServiceImpl implements DeviceQueryService {
 
     @Override
     public List<Device> handle(GetUnassignedDevicesByParkingIdQuery query) {
-        return deviceRepository.findByParkingIdParkingIdAndEdgeServerIdEdgeServerId(query.parkingId(), "");
+        return deviceRepository.findByParkingIdParkingIdAndEdgeServerIdEdgeServerId(query.parkingId(), "unassigned");
     }
 
     @Override

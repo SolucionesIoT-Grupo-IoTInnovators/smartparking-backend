@@ -51,8 +51,11 @@ public class Device extends AuditableAbstractAggregateRoot<Device> {
         this.parkingSpotId = new ParkingSpotId(parkingSpotId);
         this.spotStatus = SpotStatus.valueOf(spotStatus);
         this.spotLabel = spotLabel;
-        this.operationalStatus = DeviceStatus.OFFLINE;
+        this.edgeServerId = new EdgeServerId();
+        this.macAddress = null; // Assuming macAddress is not set initially
         this.type = DeviceType.NONE;
+        this.operationalStatus = DeviceStatus.OFFLINE;
+        this.lastCommunication = LocalDateTime.now();
     }
 
     /*
@@ -97,6 +100,6 @@ public class Device extends AuditableAbstractAggregateRoot<Device> {
     }
 
     public String edgeServerId() {
-        return edgeServerId.edgeServerId();
+        return edgeServerId.edgeServerId() == null ? null : edgeServerId.edgeServerId();
     }
 }

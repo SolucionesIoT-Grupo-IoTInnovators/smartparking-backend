@@ -4,12 +4,7 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public record EdgeServerId(String edgeServerId) {
-    public EdgeServerId {
-        if (edgeServerId == null) {
-            throw new IllegalArgumentException("Edge Server ID cannot be null");
-        }
-    }
     public EdgeServerId() {
-        this("");
+        this("unassigned");
     }
 }

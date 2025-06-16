@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, Long> {
     Optional<Device> findByParkingSpotId_SpotId(UUID parkingSpotId);
-    List<Device> findByParkingIdParkingId(Long parkingId);
+    List<Device> findByParkingId_ParkingId(Long parkingId);
     List<Device> findByParkingIdParkingIdAndEdgeServerIdEdgeServerId(Long parkingId, String edgeServerId);
     Optional<Device> findByParkingSpotIdSpotId(UUID parkingSpotIdSpotId);
     List<Device> findByEdgeServerIdEdgeServerId(String edgeServerId);
