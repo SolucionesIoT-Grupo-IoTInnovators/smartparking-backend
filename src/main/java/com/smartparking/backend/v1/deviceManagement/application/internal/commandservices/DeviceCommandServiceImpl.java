@@ -3,6 +3,7 @@ package com.smartparking.backend.v1.deviceManagement.application.internal.comman
 import com.smartparking.backend.v1.deviceManagement.domain.model.aggregates.Device;
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.CreateDeviceCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceCommand;
+import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceMacAddressCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.model.valueobjects.DeviceStatus;
 import com.smartparking.backend.v1.deviceManagement.domain.services.DeviceCommandService;
 import com.smartparking.backend.v1.deviceManagement.infrastructure.persistence.jpa.repositories.DeviceRepository;
@@ -31,6 +32,15 @@ public class DeviceCommandServiceImpl implements DeviceCommandService {
         var device = deviceRepository.findByParkingSpotId_SpotId(command.deviceId())
                 .orElseThrow(() -> new IllegalArgumentException("Device not found"));
         device.updateMissingFields(command);
+        var updatedDevice = deviceRepository.save(device);
+        return Optional.of(updatedDevice);
+    }
+
+    @Override
+    public Optional<Device> handle(UpdateDeviceMacAddressCommand command) {
+        var device = deviceRepository.findById(command.deviceId())
+                .orElseThrow(() -> new IllegalArgumentException("Device not found"));
+        device.setMacAddress(command.newMacAddress());
         var updatedDevice = deviceRepository.save(device);
         return Optional.of(updatedDevice);
     }

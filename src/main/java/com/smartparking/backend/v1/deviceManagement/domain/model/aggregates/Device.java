@@ -32,6 +32,7 @@ public class Device extends AuditableAbstractAggregateRoot<Device> {
     private EdgeServerId edgeServerId;
 
     @Getter
+    @Setter
     /*@Column(unique = true)*/
     private String macAddress;
 
