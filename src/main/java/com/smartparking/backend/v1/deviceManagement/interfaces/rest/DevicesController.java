@@ -11,6 +11,7 @@ import com.smartparking.backend.v1.deviceManagement.interfaces.rest.resources.De
 import com.smartparking.backend.v1.deviceManagement.interfaces.rest.resources.UpdateDeviceResource;
 import com.smartparking.backend.v1.deviceManagement.interfaces.rest.transform.DeviceResourceFromEntityAssembler;
 import com.smartparking.backend.v1.deviceManagement.interfaces.rest.transform.UpdateDeviceCommandFromResourceAssembler;
+import com.smartparking.backend.v1.deviceManagement.interfaces.rest.transform.UpdateDeviceMacAddressCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -54,7 +55,26 @@ public class DevicesController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Get devices by parking id")
+    @Operation(summary = "Update device mac address by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Device mac address updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid device id or mac address format"),
+            @ApiResponse(responseCode = "404", description = "Device not found")
+    })
+    @PatchMapping("/{deviceId}")
+    public ResponseEntity<DeviceResource> updateDeviceMacAddress(@PathVariable Long deviceId, @RequestParam String macAddress) {
+        Optional<Device> updatedDevice = this.deviceCommandService.handle(
+                UpdateDeviceMacAddressCommandFromResourceAssembler.toCommandFromResource(deviceId, macAddress));
+        if (updatedDevice.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return updatedDevice.map(device ->
+                ResponseEntity.ok(DeviceResourceFromEntityAssembler.toResourceFromEntity(device)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+    /*@Operation(summary = "Get devices by parking id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Devices retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "No devices found for the given parking id")
@@ -72,9 +92,9 @@ public class DevicesController {
                 .map(DeviceResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
         return ResponseEntity.ok(resources);
-    }
+    }*/
 
-    @Operation(summary = "Get device by parking spot id")
+    /*@Operation(summary = "Get device by parking spot id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Device retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Device not found")
@@ -86,7 +106,7 @@ public class DevicesController {
         return device.map(source ->
                         ResponseEntity.ok(DeviceResourceFromEntityAssembler.toResourceFromEntity(source)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+    }*/
 
     @Operation(summary = "Get devices by edge server id")
     @ApiResponses(value = {
