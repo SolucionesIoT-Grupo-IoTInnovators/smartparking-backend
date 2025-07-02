@@ -1,7 +1,6 @@
 package com.smartparking.backend.v1.notifications.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +8,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FcmToken {
+
     @Id
-    private Long userId; // o userId
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long userId;
+
+    @Column(unique = true)
     private String token;
 }

@@ -1,6 +1,7 @@
 package com.smartparking.backend.v1.reservations.application.internal.commandservices;
 
 import com.smartparking.backend.v1.notifications.application.service.NotificationService;
+import com.smartparking.backend.v1.notifications.domain.model.FcmToken;
 import com.smartparking.backend.v1.notifications.domain.repository.FcmTokenRepository;
 import com.smartparking.backend.v1.reservations.application.internal.outboundservices.acl.ExternalParkingService;
 import com.smartparking.backend.v1.reservations.application.internal.outboundservices.acl.ExternalProfileService;
@@ -10,6 +11,7 @@ import com.smartparking.backend.v1.reservations.domain.services.ReservationComma
 import com.smartparking.backend.v1.reservations.infrastructure.persistence.jpa.repositories.ReservationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,15 +45,17 @@ public class ReservationCommandServiceImpl implements ReservationCommandService 
         externalParkingService.updateParkingSpotAvailability(command.parkingId(), command.parkingSpotId(), "RESERVED");
         externalParkingService.updateAvailableSpotsCount(command.parkingId(), 1, "subtract");
 
-        // 🔔 Enviar notificación al propietario
+        // Enviar notificación al propietario
         Long ownerUserId = externalParkingService.getOwnerUserIdByParkingId(command.parkingId());
-        fcmTokenRepository.findByUserId(ownerUserId).ifPresent(fcmToken -> {
+        List<FcmToken> tokens = fcmTokenRepository.findAllByUserId(ownerUserId);
+        for (FcmToken token : tokens) {
             notificationService.sendNotification(
-                    fcmToken.getToken(),
+                    token.getToken(),
                     "Nueva reserva",
                     "Han reservado un espacio en tu estacionamiento."
             );
-        });
+        }
+
 
 
         return Optional.of(savedReservation);

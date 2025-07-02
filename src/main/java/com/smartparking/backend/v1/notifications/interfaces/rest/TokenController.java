@@ -17,10 +17,24 @@ public class TokenController {
 
     @PostMapping("/register-token")
     public ResponseEntity<Void> registerToken(@RequestParam Long userId, @RequestParam String token) {
-        FcmToken entity = new FcmToken();
-        entity.setUserId(userId);
-        entity.setToken(token);
-        fcmTokenRepository.save(entity);
+        fcmTokenRepository.findByToken(token).ifPresentOrElse(existing -> {
+            if (!existing.getUserId().equals(userId)) {
+                existing.setUserId(userId);
+                fcmTokenRepository.save(existing);
+            }
+        }, () -> {
+            FcmToken newToken = new FcmToken();
+            newToken.setUserId(userId);
+            newToken.setToken(token);
+            fcmTokenRepository.save(newToken);
+        });
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/unregister-token")
+    public ResponseEntity<Void> unregisterToken(@RequestParam String token) {
+        fcmTokenRepository.deleteByToken(token);
         return ResponseEntity.ok().build();
     }
 }
