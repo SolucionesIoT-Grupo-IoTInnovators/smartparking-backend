@@ -28,4 +28,10 @@ public class ExternalParkingService {
     public void updateAvailableSpotsCount(Long parkingId, Integer availableSpots, String operation) {
         this.parkingSpotContextFacade.updateAvailableParkingSpotCount(parkingId, availableSpots, operation);
     }
+
+    public Long getOwnerUserIdByParkingId(Long parkingId) {
+        return this.parkingSpotContextFacade.getOwnerUserIdByParkingId(parkingId);
+    }
+
+
 }
