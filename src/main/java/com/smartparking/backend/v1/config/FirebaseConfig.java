@@ -6,7 +6,8 @@ import com.google.firebase.FirebaseOptions;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
 
 @Configuration
 public class FirebaseConfig {
@@ -14,8 +15,14 @@ public class FirebaseConfig {
     @PostConstruct
     public void initializeFirebase() {
         try {
-            InputStream serviceAccount =
-                    getClass().getClassLoader().getResourceAsStream("firebase/iot-innovators-d423f-319c52e7ecc3.json");
+            String firebaseConfigBase64 = System.getenv("FIREBASE_ADMIN_CONFIG");
+
+            if (firebaseConfigBase64 == null || firebaseConfigBase64.isEmpty()) {
+                throw new IllegalStateException("Variable de entorno FIREBASE_ADMIN_CONFIG no está definida.");
+            }
+
+            byte[] decodedBytes = Base64.getDecoder().decode(firebaseConfigBase64);
+            ByteArrayInputStream serviceAccount = new ByteArrayInputStream(decodedBytes);
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -23,11 +30,11 @@ public class FirebaseConfig {
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
-                System.out.println("Firebase inicializado correctamente.");
+                System.out.println("Firebase inicializado correctamente desde variable de entorno.");
             }
 
         } catch (Exception e) {
-            System.err.println("Error al inicializar Firebase:");
+            System.err.println("Error al inicializar Firebase desde variable de entorno:");
             e.printStackTrace();
         }
     }
