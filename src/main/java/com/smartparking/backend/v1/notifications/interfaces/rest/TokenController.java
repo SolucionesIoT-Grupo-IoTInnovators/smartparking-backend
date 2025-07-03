@@ -2,11 +2,13 @@ package com.smartparking.backend.v1.notifications.interfaces.rest;
 
 import com.smartparking.backend.v1.notifications.domain.model.FcmToken;
 import com.smartparking.backend.v1.notifications.domain.repository.FcmTokenRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/notifications")
+@Tag(name = "Token Controller", description = "FCM Token Management Endpoints")
 public class TokenController {
 
     private final FcmTokenRepository fcmTokenRepository;
