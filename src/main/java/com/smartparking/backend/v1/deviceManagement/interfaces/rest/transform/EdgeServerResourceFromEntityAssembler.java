@@ -11,7 +11,7 @@ public class EdgeServerResourceFromEntityAssembler {
                 entity.getServerId(),
                 entity.getApiKey(),
                 entity.getName(),
-                entity.getIpAddress(),
+                entity.getMacAddress(),
                 entity.getStatus().name(),
                 entity.getLastHeartBeat(),
                 entity.getConnectedDevicesCount(),

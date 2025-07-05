@@ -4,7 +4,7 @@ public record CreateEdgeServerResource(
         String serverId,
         String apiKey,
         String name,
-        String ipAddress,
+        String macAddress,
         String status,
         Long parkingId
         ) {
