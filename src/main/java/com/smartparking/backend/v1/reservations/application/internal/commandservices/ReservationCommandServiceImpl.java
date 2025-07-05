@@ -1,5 +1,8 @@
 package com.smartparking.backend.v1.reservations.application.internal.commandservices;
 
+import com.smartparking.backend.v1.notifications.application.service.NotificationService;
+import com.smartparking.backend.v1.notifications.domain.model.FcmToken;
+import com.smartparking.backend.v1.notifications.domain.repository.FcmTokenRepository;
 import com.smartparking.backend.v1.deviceManagement.infrastructure.gateway.ParkingMqttService;
 import com.smartparking.backend.v1.reservations.application.internal.outboundservices.acl.ExternalParkingService;
 import com.smartparking.backend.v1.reservations.application.internal.outboundservices.acl.ExternalProfileService;
@@ -9,6 +12,7 @@ import com.smartparking.backend.v1.reservations.domain.services.ReservationComma
 import com.smartparking.backend.v1.reservations.infrastructure.persistence.jpa.repositories.ReservationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -18,11 +22,16 @@ public class ReservationCommandServiceImpl implements ReservationCommandService 
     private final ExternalParkingService externalParkingService;
     private final ExternalProfileService externalProfileServiceReservation;
     private final ParkingMqttService parkingMqttService;
+    private final NotificationService notificationService;
+    private final FcmTokenRepository fcmTokenRepository;
 
-    public ReservationCommandServiceImpl(ReservationRepository reservationRepository, ExternalParkingService externalParkingService, ExternalProfileService externalProfileServiceReservation, ParkingMqttService parkingMqttService) {
+    public ReservationCommandServiceImpl(ReservationRepository reservationRepository, ExternalParkingService externalParkingService, ExternalProfileService externalProfileServiceReservation, ParkingMqttService parkingMqttService,
+                                          NotificationService notificationService, FcmTokenRepository fcmTokenRepository) {
         this.reservationRepository = reservationRepository;
         this.externalParkingService = externalParkingService;
         this.externalProfileServiceReservation = externalProfileServiceReservation;
+        this.notificationService = notificationService;
+        this.fcmTokenRepository = fcmTokenRepository;
         this.parkingMqttService = parkingMqttService;
     }
 
@@ -38,6 +47,18 @@ public class ReservationCommandServiceImpl implements ReservationCommandService 
         var savedReservation = reservationRepository.save(reservation);
         externalParkingService.updateParkingSpotAvailability(command.parkingId(), command.parkingSpotId(), "RESERVED");
         externalParkingService.updateAvailableSpotsCount(command.parkingId(), 1, "subtract");
+
+        // Enviar notificación al propietario
+        Long ownerUserId = externalParkingService.getOwnerUserIdByParkingId(command.parkingId());
+        List<FcmToken> tokens = fcmTokenRepository.findAllByUserId(ownerUserId);
+        for (FcmToken token : tokens) {
+            notificationService.sendNotification(
+                    token.getToken(),
+                    "Nueva reserva",
+                    "Han reservado un espacio en tu estacionamiento."
+            );
+        }
+
         parkingMqttService.reserveSpot(String.valueOf(command.parkingSpotId()), true);
         return Optional.of(savedReservation);
     }

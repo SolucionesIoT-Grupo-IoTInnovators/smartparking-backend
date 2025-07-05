@@ -76,4 +76,12 @@ public class ParkingSpotContextFacadeImpl implements ParkingSpotContextFacade {
             throw new IllegalStateException("Parking not found");
         }
     }
+    @Override
+    public Long getOwnerUserIdByParkingId(Long parkingId) {
+        var parking = parkingQueryService.handle(new GetParkingByIdQuery(parkingId));
+        if (parking.isEmpty()) {
+            throw new IllegalStateException("Parking not found");
+        }
+        return parking.get().getOwnerId();
+    }
 }
