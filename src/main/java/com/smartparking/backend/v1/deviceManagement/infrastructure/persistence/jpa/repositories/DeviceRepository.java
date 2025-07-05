@@ -15,4 +15,5 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     List<Device> findByParkingIdParkingIdAndEdgeServerIdEdgeServerId(Long parkingId, String edgeServerId);
     Optional<Device> findByParkingSpotIdSpotId(UUID parkingSpotIdSpotId);
     List<Device> findByEdgeServerIdEdgeServerId(String edgeServerId);
+    List<Device> findAllByEdgeServerId_EdgeServerId(String edgeServerId);
 }
