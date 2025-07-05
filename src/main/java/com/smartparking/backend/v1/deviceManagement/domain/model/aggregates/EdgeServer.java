@@ -31,7 +31,7 @@ public class EdgeServer extends AuditableAbstractAggregateRoot<EdgeServer> {
 
     @Getter
     @NotNull
-    private String ipAddress;
+    private String macAddress;
 
     @Getter
     @Setter
@@ -55,7 +55,7 @@ public class EdgeServer extends AuditableAbstractAggregateRoot<EdgeServer> {
         this.serverId = command.serverId();
         this.apiKey = command.apiKey();
         this.name = command.name();
-        this.ipAddress = command.ipAddress();
+        this.macAddress = command.macAddress();
         this.status = EdgeServerStatus.valueOf(command.status());
         this.lastHeartbeat = LocalDateTime.now();
         this.connectedDevicesCount = 0;
