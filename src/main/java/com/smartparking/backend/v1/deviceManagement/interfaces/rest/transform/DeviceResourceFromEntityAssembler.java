@@ -13,9 +13,9 @@ public class DeviceResourceFromEntityAssembler {
                 entity.getOperationalStatus(),
                 entity.getSpotStatus(),
                 entity.getSpotLabel(),
-                entity.parkingSpotId(),
+                entity.getParkingSpotId(),
                 entity.getParkingId(),
-                entity.edgeServerId(),
+                entity.getEdgeServerId(),
                 entity.getLastCommunication()
         );
     }

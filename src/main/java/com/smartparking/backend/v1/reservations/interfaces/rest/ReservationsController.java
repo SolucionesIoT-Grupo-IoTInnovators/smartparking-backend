@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +41,7 @@ public class ReservationsController {
             @ApiResponse(responseCode = "400", description = "Invalid request data")
     })
     @PostMapping
-    public ResponseEntity<ReservationResource> createReservation(@RequestBody CreateReservationResource resource) {
+    public ResponseEntity<ReservationResource> createReservation(@RequestBody CreateReservationResource resource) throws IOException {
         Optional<Reservation> reservation = this.reservationCommandService
                 .handle(CreateReservationCommandFromResourceAssembler.toCommandFromResource(resource));
 

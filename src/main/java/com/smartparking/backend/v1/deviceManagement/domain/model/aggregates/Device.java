@@ -96,11 +96,11 @@ public class Device extends AuditableAbstractAggregateRoot<Device> {
         return lastCommunication.toString();
     }
 
-    public String parkingSpotId() {
+    public String getParkingSpotId() {
         return parkingSpotId.spotId().toString();
     }
 
-    public String edgeServerId() {
+    public String getEdgeServerId() {
         return edgeServerId.edgeServerId() == null ? null : edgeServerId.edgeServerId();
     }
 }

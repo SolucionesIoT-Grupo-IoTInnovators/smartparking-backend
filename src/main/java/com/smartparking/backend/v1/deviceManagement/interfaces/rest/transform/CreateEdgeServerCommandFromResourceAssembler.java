@@ -10,7 +10,7 @@ public class CreateEdgeServerCommandFromResourceAssembler {
                 resource.serverId(),
                 resource.apiKey(),
                 resource.name(),
-                resource.ipAddress(),
+                resource.macAddress(),
                 resource.status(),
                 resource.parkingId()
         );
