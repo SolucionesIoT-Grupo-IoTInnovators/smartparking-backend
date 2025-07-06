@@ -87,6 +87,12 @@ public class ParkingMqttService {
         Map<String, Object> data = objectMapper.readValue(payload, new TypeReference<>() {});
 
         Boolean occupied = (Boolean) data.get("occupied");
+
+        if (occupied == null) {
+            System.out.println("Campo 'occupied' no encontrado en el mensaje: " + payload);
+            return;
+        }
+
         String spotId = (String) data.get("spotId");
         String apiKey = (String) data.get("apiKey");
 

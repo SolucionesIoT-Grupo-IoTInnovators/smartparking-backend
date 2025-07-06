@@ -74,6 +74,10 @@ public class Reservation extends AuditableAbstractAggregateRoot<Reservation> {
         return (minutes / 60.0f) * pricePerHour;
     }
 
+    public void updateStatus(String newStatus) {
+        this.status = ReservationStatus.valueOf(newStatus.toUpperCase());
+    }
+
     public void confirm() {
         this.status = ReservationStatus.CONFIRMED;
     }

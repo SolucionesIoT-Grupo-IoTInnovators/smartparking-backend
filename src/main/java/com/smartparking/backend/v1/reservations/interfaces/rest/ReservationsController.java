@@ -9,6 +9,7 @@ import com.smartparking.backend.v1.reservations.interfaces.rest.resources.Create
 import com.smartparking.backend.v1.reservations.interfaces.rest.resources.ReservationResource;
 import com.smartparking.backend.v1.reservations.interfaces.rest.transform.CreateReservationCommandFromResourceAssembler;
 import com.smartparking.backend.v1.reservations.interfaces.rest.transform.ReservationResourceFromEntityAssembler;
+import com.smartparking.backend.v1.reservations.interfaces.rest.transform.UpdateReservationCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -89,5 +90,21 @@ public class ReservationsController {
                 .map(ReservationResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
         return ResponseEntity.ok(resources);
+    }
+
+    @Operation(summary = "Update a reservation status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reservation status updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Reservation not found")
+    })
+    @PatchMapping("/{reservationId}")
+    public ResponseEntity<ReservationResource> updateReservationStatus(
+            @PathVariable Long reservationId, @RequestParam String status) throws IOException {
+        Optional<Reservation> updatedReservation = this.reservationCommandService
+                .handle(UpdateReservationCommandFromResourceAssembler.toCommandFromResource(reservationId, status));
+
+        return updatedReservation.map(reservation ->
+                        ResponseEntity.ok(ReservationResourceFromEntityAssembler.toResourceFromEntity(reservation)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

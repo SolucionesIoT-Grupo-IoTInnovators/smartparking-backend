@@ -8,6 +8,7 @@ import com.smartparking.backend.v1.reservations.application.internal.outboundser
 import com.smartparking.backend.v1.reservations.application.internal.outboundservices.acl.ExternalProfileService;
 import com.smartparking.backend.v1.reservations.domain.model.aggregates.Reservation;
 import com.smartparking.backend.v1.reservations.domain.model.commands.CreateReservationCommand;
+import com.smartparking.backend.v1.reservations.domain.model.commands.UpdateReservationStatusCommand;
 import com.smartparking.backend.v1.reservations.domain.services.ReservationCommandService;
 import com.smartparking.backend.v1.reservations.infrastructure.persistence.jpa.repositories.ReservationRepository;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ReservationCommandServiceImpl implements ReservationCommandService {
@@ -61,5 +63,35 @@ public class ReservationCommandServiceImpl implements ReservationCommandService 
 
         parkingMqttService.reserveSpot(String.valueOf(command.parkingSpotId()), true);
         return Optional.of(savedReservation);
+    }
+
+    @Override
+    public Optional<Reservation> handle(UpdateReservationStatusCommand command) throws IOException {
+        var reservation = reservationRepository.findById(command.reservationId())
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+        reservation.updateStatus(command.status());
+        var spotId = UUID.fromString(reservation.getParkingSpotId());
+        var updatedReservation = reservationRepository.save(reservation);
+        if (command.status().equalsIgnoreCase("CONFIRMED")) {
+            parkingMqttService.reserveSpot(String.valueOf(reservation.getParkingSpotId()), false);
+            externalParkingService.updateAvailableSpotsCount(reservation.getParkingId(), 1, "subtract");
+        } else if (command.status().equalsIgnoreCase("CANCELED")) {
+            externalParkingService.updateParkingSpotAvailability(reservation.getParkingId(), spotId, "AVAILABLE");
+            externalParkingService.updateAvailableSpotsCount(reservation.getParkingId(), 1, "add");
+        } else if (command.status().equalsIgnoreCase("COMPLETED")) {
+            externalParkingService.updateParkingSpotAvailability(reservation.getParkingId(), spotId, "AVAILABLE");
+            externalParkingService.updateAvailableSpotsCount(reservation.getParkingId(), 1, "add");
+        }
+        // Enviar notificación al propietario
+        Long ownerUserId = externalParkingService.getOwnerUserIdByParkingId(reservation.getParkingId());
+        List<FcmToken> tokens = fcmTokenRepository.findAllByUserId(ownerUserId);
+        for (FcmToken token : tokens) {
+            notificationService.sendNotification(
+                    token.getToken(),
+                    "Estado de reserva actualizado",
+                    "El estado de la reserva ha sido actualizado a: " + command.status()
+            );
+        }
+        return Optional.of(updatedReservation);
     }
 }
