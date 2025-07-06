@@ -29,6 +29,7 @@ public class EdgeServer extends AuditableAbstractAggregateRoot<EdgeServer> {
     @NotNull
     private String name;
 
+    @Setter
     @Getter
     @NotNull
     private String macAddress;
