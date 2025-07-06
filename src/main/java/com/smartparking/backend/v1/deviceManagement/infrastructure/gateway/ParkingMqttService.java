@@ -154,7 +154,7 @@ public class ParkingMqttService {
             System.out.println("Edge server no encontrado para edgeServerId: " + device.get().getEdgeServerId());
             return;
         }
-        Map<String, String> msg = Map.of("spotId", spotId, "apiKey", edgeServer.get().getApiKey(), "reserved", reserved.toString());
+        Map<String, Object> msg = Map.of("spotId", spotId, "apiKey", edgeServer.get().getApiKey(), "reserved", reserved);
         byte[] payload = objectMapper.writeValueAsBytes(msg);
         mqttOutboundChannel.send(MessageBuilder.withPayload(payload)
                 .setHeader(MqttHeaders.TOPIC, topic)
