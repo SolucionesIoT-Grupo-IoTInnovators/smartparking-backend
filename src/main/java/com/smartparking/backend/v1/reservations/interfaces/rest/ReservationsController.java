@@ -1,8 +1,8 @@
 package com.smartparking.backend.v1.reservations.interfaces.rest;
 
 import com.smartparking.backend.v1.reservations.domain.model.aggregates.Reservation;
-import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByParkingIdQuery;
 import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByDriverIdAndStatusQuery;
+import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByParkingIdQuery;
 import com.smartparking.backend.v1.reservations.domain.services.ReservationCommandService;
 import com.smartparking.backend.v1.reservations.domain.services.ReservationQueryService;
 import com.smartparking.backend.v1.reservations.interfaces.rest.resources.CreateReservationResource;

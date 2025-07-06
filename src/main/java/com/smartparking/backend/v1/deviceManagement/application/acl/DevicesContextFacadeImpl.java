@@ -16,8 +16,8 @@ public class DevicesContextFacadeImpl implements DevicesContextFacade {
     }
 
     @Override
-    public void createDevice(Long parkingId, UUID parkingSpotId, String spotStatus, String spotLabel) {
-        var command = new CreateDeviceCommand(parkingId, parkingSpotId, spotStatus, spotLabel);
+    public void createDevice(Long parkingId, UUID parkingSpotId, String spotStatus, String spotLabel, String edgeServerId) {
+        var command = new CreateDeviceCommand(parkingId, parkingSpotId, spotStatus, spotLabel, edgeServerId);
         var device = deviceCommandService.handle(command);
         if (device.isEmpty()) {
             throw new IllegalStateException("Device creation failed");

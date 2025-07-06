@@ -2,7 +2,9 @@ package com.smartparking.backend.v1.payment.domain.model.aggregates;
 
 import com.smartparking.backend.v1.payment.domain.model.commands.CreatePaymentCommand;
 import com.smartparking.backend.v1.payment.domain.model.valueobjects.Payment;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

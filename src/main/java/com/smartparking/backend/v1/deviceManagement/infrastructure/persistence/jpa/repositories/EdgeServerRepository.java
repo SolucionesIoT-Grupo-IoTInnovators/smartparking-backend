@@ -13,6 +13,7 @@ public interface EdgeServerRepository extends JpaRepository<EdgeServer, Long> {
     boolean existsByServerId(String serverId);
     Optional<EdgeServer> findByMacAddress(String macAddress);
     List<EdgeServer> findByParkingIdParkingId(Long parkingId);
+    Optional<EdgeServer> findByParkingId_ParkingId(Long parkingId);
 
     Optional<EdgeServer> findByServerId(String serverId);
     @Query("SELECT e.parkingId.parkingId FROM EdgeServer e WHERE e.serverId = :serverId")

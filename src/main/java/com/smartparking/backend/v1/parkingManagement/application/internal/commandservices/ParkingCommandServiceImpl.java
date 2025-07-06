@@ -1,5 +1,7 @@
 package com.smartparking.backend.v1.parkingManagement.application.internal.commandservices;
 
+import com.smartparking.backend.v1.deviceManagement.domain.model.aggregates.EdgeServer;
+import com.smartparking.backend.v1.deviceManagement.infrastructure.persistence.jpa.repositories.EdgeServerRepository;
 import com.smartparking.backend.v1.parkingManagement.application.internal.outboundservices.acl.ExternalDeviceService;
 import com.smartparking.backend.v1.parkingManagement.domain.model.aggregates.Parking;
 import com.smartparking.backend.v1.parkingManagement.domain.model.commands.*;
@@ -14,10 +16,12 @@ import java.util.Optional;
 public class ParkingCommandServiceImpl implements ParkingCommandService {
 
     private final ParkingRepository parkingRepository;
+    private final EdgeServerRepository edgeServerRepository;
     private final ExternalDeviceService externalDeviceService;
 
-    public ParkingCommandServiceImpl(ParkingRepository parkingRepository, ExternalDeviceService externalDeviceService) {
+    public ParkingCommandServiceImpl(ParkingRepository parkingRepository, EdgeServerRepository edgeServerRepository, ExternalDeviceService externalDeviceService) {
         this.parkingRepository = parkingRepository;
+        this.edgeServerRepository = edgeServerRepository;
         this.externalDeviceService = externalDeviceService;
     }
 
@@ -25,6 +29,9 @@ public class ParkingCommandServiceImpl implements ParkingCommandService {
     public Optional<Parking> handle(CreateParkingCommand command) {
         var parking = new Parking(command);
         var createdParking = parkingRepository.save(parking);
+        // Create Edge Server for the parking
+        EdgeServer edgeServer = new EdgeServer(createdParking.getId());
+        edgeServerRepository.save(edgeServer);
         return Optional.of(createdParking);
     }
 
@@ -35,8 +42,12 @@ public class ParkingCommandServiceImpl implements ParkingCommandService {
 
         var spot = parking.addParkingSpot(command);
         var updatedParking = parkingRepository.save(parking);
-        // Create a device for the new parking spot
-        externalDeviceService.createDevice(command.parkingId(), spot.getId(), spot.getStatus(), spot.getLabel());
+
+        var edgeServer = edgeServerRepository.findByParkingId_ParkingId(command.parkingId())
+                .orElseThrow(() -> new IllegalArgumentException("Edge Server not found for parking"));
+
+        externalDeviceService.createDevice(command.parkingId(), spot.getId(), spot.getStatus(), spot.getLabel(), edgeServer.getServerId());
+
         return updatedParking.getParkingSpots().stream()
                 .filter(parkingSpot -> parkingSpot.getParkingId().equals(command.parkingId()))
                 .findFirst();

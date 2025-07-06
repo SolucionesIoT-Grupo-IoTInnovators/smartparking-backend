@@ -8,8 +8,6 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Entity
 public class Review extends AuditableAbstractAggregateRoot<Review> {
 

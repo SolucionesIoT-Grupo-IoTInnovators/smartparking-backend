@@ -1,9 +1,9 @@
 package com.smartparking.backend.v1.reservations.application.internal.commandservices;
 
+import com.smartparking.backend.v1.deviceManagement.infrastructure.gateway.ParkingMqttService;
 import com.smartparking.backend.v1.notifications.application.service.NotificationService;
 import com.smartparking.backend.v1.notifications.domain.model.FcmToken;
 import com.smartparking.backend.v1.notifications.domain.repository.FcmTokenRepository;
-import com.smartparking.backend.v1.deviceManagement.infrastructure.gateway.ParkingMqttService;
 import com.smartparking.backend.v1.reservations.application.internal.outboundservices.acl.ExternalParkingService;
 import com.smartparking.backend.v1.reservations.application.internal.outboundservices.acl.ExternalProfileService;
 import com.smartparking.backend.v1.reservations.domain.model.aggregates.Reservation;
@@ -13,8 +13,8 @@ import com.smartparking.backend.v1.reservations.domain.services.ReservationComma
 import com.smartparking.backend.v1.reservations.infrastructure.persistence.jpa.repositories.ReservationRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

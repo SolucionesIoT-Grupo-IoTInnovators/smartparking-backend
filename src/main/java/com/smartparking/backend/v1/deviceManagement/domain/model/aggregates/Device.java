@@ -1,10 +1,12 @@
 package com.smartparking.backend.v1.deviceManagement.domain.model.aggregates;
 
-import com.smartparking.backend.v1.deviceManagement.domain.model.commands.CreateDeviceCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.model.valueobjects.*;
 import com.smartparking.backend.v1.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import jakarta.persistence.*;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,13 +49,13 @@ public class Device extends AuditableAbstractAggregateRoot<Device> {
 
     protected Device() {}
 
-    public Device(Long parkingId, UUID parkingSpotId, String spotStatus, String spotLabel) {
+    public Device(Long parkingId, UUID parkingSpotId, String spotStatus, String spotLabel, String edgeServerId) {
         this.parkingId = new ParkingId(parkingId);
         this.parkingSpotId = new ParkingSpotId(parkingSpotId);
         this.spotStatus = SpotStatus.valueOf(spotStatus);
         this.spotLabel = spotLabel;
-        this.edgeServerId = new EdgeServerId();
-        this.macAddress = null; // Assuming macAddress is not set initially
+        this.edgeServerId = new EdgeServerId(edgeServerId);
+        this.macAddress = null;
         this.type = DeviceType.NONE;
         this.operationalStatus = DeviceStatus.OFFLINE;
         this.lastCommunication = LocalDateTime.now();

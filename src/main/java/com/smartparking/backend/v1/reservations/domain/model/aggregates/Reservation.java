@@ -1,6 +1,5 @@
 package com.smartparking.backend.v1.reservations.domain.model.aggregates;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smartparking.backend.v1.reservations.domain.model.commands.CreateReservationCommand;
 import com.smartparking.backend.v1.reservations.domain.model.valueobjects.DriverId;
 import com.smartparking.backend.v1.reservations.domain.model.valueobjects.ParkingId;
@@ -13,7 +12,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity

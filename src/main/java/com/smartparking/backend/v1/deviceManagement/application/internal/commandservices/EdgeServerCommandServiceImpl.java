@@ -2,7 +2,6 @@ package com.smartparking.backend.v1.deviceManagement.application.internal.comman
 
 import com.smartparking.backend.v1.deviceManagement.domain.model.aggregates.EdgeServer;
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.CreateEdgeServerCommand;
-import com.smartparking.backend.v1.deviceManagement.domain.model.valueobjects.EdgeServerStatus;
 import com.smartparking.backend.v1.deviceManagement.domain.services.EdgeServerCommandService;
 import com.smartparking.backend.v1.deviceManagement.infrastructure.persistence.jpa.repositories.EdgeServerRepository;
 import org.springframework.stereotype.Service;

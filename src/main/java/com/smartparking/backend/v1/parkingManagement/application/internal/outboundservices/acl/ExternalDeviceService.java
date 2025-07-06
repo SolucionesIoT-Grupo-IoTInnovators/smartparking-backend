@@ -13,7 +13,7 @@ public class ExternalDeviceService {
         this.devicesContextFacade = devicesContextFacade;
     }
 
-    public void createDevice(Long parkingId, UUID parkingSpotId, String spotStatus, String spotLabel) {
-        this.devicesContextFacade.createDevice(parkingId, parkingSpotId, spotStatus, spotLabel);
+    public void createDevice(Long parkingId, UUID parkingSpotId, String spotStatus, String spotLabel, String edgeServerId) {
+        this.devicesContextFacade.createDevice(parkingId, parkingSpotId, spotStatus, spotLabel, edgeServerId);
     }
 }

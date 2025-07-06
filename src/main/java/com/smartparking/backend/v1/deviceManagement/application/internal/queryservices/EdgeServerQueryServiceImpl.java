@@ -7,7 +7,6 @@ import com.smartparking.backend.v1.deviceManagement.infrastructure.persistence.j
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EdgeServerQueryServiceImpl implements EdgeServerQueryService {
