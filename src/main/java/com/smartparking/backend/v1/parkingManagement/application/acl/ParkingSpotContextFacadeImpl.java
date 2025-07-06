@@ -2,7 +2,6 @@ package com.smartparking.backend.v1.parkingManagement.application.acl;
 
 import com.smartparking.backend.v1.parkingManagement.domain.model.commands.UpdateAvailableParkingSpotCountCommand;
 import com.smartparking.backend.v1.parkingManagement.domain.model.commands.UpdateParkingRatingCommand;
-import com.smartparking.backend.v1.parkingManagement.domain.model.commands.UpdateParkingRatingCountCommand;
 import com.smartparking.backend.v1.parkingManagement.domain.model.commands.UpdateParkingSpotAvailabilityCommand;
 import com.smartparking.backend.v1.parkingManagement.domain.model.queries.GetParkingByIdQuery;
 import com.smartparking.backend.v1.parkingManagement.domain.services.ParkingCommandService;

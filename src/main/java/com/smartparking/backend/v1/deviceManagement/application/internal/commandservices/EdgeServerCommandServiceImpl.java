@@ -2,7 +2,7 @@ package com.smartparking.backend.v1.deviceManagement.application.internal.comman
 
 import com.smartparking.backend.v1.deviceManagement.domain.model.aggregates.EdgeServer;
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.CreateEdgeServerCommand;
-import com.smartparking.backend.v1.deviceManagement.domain.model.valueobjects.EdgeServerStatus;
+import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateEdgeServerMacAddressCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.services.EdgeServerCommandService;
 import com.smartparking.backend.v1.deviceManagement.infrastructure.persistence.jpa.repositories.EdgeServerRepository;
 import org.springframework.stereotype.Service;
@@ -20,10 +20,26 @@ public class EdgeServerCommandServiceImpl implements EdgeServerCommandService {
 
     @Override
     public Optional<EdgeServer> handle(CreateEdgeServerCommand command) {
-        if (edgeServerRepository.existsByServerId(command.serverId())) {
-            throw new IllegalArgumentException("Edge server with this serverId already exists");
+        Optional<EdgeServer> existingEdgeServer = edgeServerRepository.findByMacAddress(command.macAddress());
+        if (existingEdgeServer.isPresent()) {
+            return existingEdgeServer;
         }
         EdgeServer edgeServer = new EdgeServer(command);
+        return Optional.of(edgeServerRepository.save(edgeServer));
+    }
+
+    @Override
+    public Optional<EdgeServer> handle(UpdateEdgeServerMacAddressCommand command) {
+        Optional<EdgeServer> existingEdgeServer = edgeServerRepository.findByMacAddress(command.newMacAddress());
+        if (existingEdgeServer.isPresent()) {
+            return existingEdgeServer;
+        }
+        Optional<EdgeServer> edgeServerOptional = edgeServerRepository.findById(command.edgeServerId());
+        if (edgeServerOptional.isEmpty()) {
+            return Optional.empty();
+        }
+        EdgeServer edgeServer = edgeServerOptional.get();
+        edgeServer.setMacAddress(command.newMacAddress());
         return Optional.of(edgeServerRepository.save(edgeServer));
     }
 }

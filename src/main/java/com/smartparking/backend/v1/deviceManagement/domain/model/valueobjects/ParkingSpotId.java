@@ -1,7 +1,8 @@
 package com.smartparking.backend.v1.deviceManagement.domain.model.valueobjects;
-import java.util.UUID;
 
 import jakarta.persistence.Embeddable;
+
+import java.util.UUID;
 
 @Embeddable
 public record ParkingSpotId(UUID spotId) {

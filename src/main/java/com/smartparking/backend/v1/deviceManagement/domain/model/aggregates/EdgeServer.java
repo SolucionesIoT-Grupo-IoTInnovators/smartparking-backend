@@ -29,9 +29,10 @@ public class EdgeServer extends AuditableAbstractAggregateRoot<EdgeServer> {
     @NotNull
     private String name;
 
+    @Setter
     @Getter
     @NotNull
-    private String ipAddress;
+    private String macAddress;
 
     @Getter
     @Setter
@@ -51,11 +52,23 @@ public class EdgeServer extends AuditableAbstractAggregateRoot<EdgeServer> {
 
     protected EdgeServer() {}
 
+    public EdgeServer(Long parking) {
+        this.parkingId = new ParkingId(parking);
+        this.serverId = generateServerId(parking);
+        this.apiKey = generateApiKey();
+        this.name = generateName();
+        this.macAddress = "00:00:00:00:00:00";
+        this.status = EdgeServerStatus.ONLINE;
+        this.lastHeartbeat = LocalDateTime.now();
+        this.connectedDevicesCount = 0;
+    }
+
+
     public EdgeServer(CreateEdgeServerCommand command) {
         this.serverId = command.serverId();
         this.apiKey = command.apiKey();
         this.name = command.name();
-        this.ipAddress = command.ipAddress();
+        this.macAddress = command.macAddress();
         this.status = EdgeServerStatus.valueOf(command.status());
         this.lastHeartbeat = LocalDateTime.now();
         this.connectedDevicesCount = 0;
@@ -68,5 +81,25 @@ public class EdgeServer extends AuditableAbstractAggregateRoot<EdgeServer> {
 
     public Long getParkingId() {
         return this.parkingId.parkingId();
+    }
+
+
+    private String generateServerId(Long parkingId) {
+        var timestamp = LocalDateTime.now();
+        var random = Math.random() * 1000; // Random number between 0 and 999
+        return String.format("SP-%d-%s-%.0f", parkingId, timestamp.toString().replace(":", "").replace("-", ""), random);
+    }
+
+    private String generateApiKey() {
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder apiKey = new StringBuilder();
+        for (int i = 0; i < 32; i++) {
+            apiKey.append(chars.charAt((int) Math.floor(Math.random() * chars.length())));
+        }
+        return apiKey.toString();
+    };
+
+    private String generateName() {
+        return "EdgeServer-" + this.parkingId.parkingId();
     }
 }

@@ -4,6 +4,7 @@ import com.smartparking.backend.v1.parkingManagement.domain.model.aggregates.Par
 import com.smartparking.backend.v1.parkingManagement.domain.model.entities.ParkingSpot;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Getter
 public class SpotManager {
 
-    @OneToMany(mappedBy = "parking", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parking", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ParkingSpot> parkingSpots;
 
     public SpotManager() {

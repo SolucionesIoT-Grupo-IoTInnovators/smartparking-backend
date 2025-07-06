@@ -1,6 +1,5 @@
 package com.smartparking.backend.v1.reservations.domain.model.aggregates;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.smartparking.backend.v1.reservations.domain.model.commands.CreateReservationCommand;
 import com.smartparking.backend.v1.reservations.domain.model.valueobjects.DriverId;
 import com.smartparking.backend.v1.reservations.domain.model.valueobjects.ParkingId;
@@ -13,7 +12,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -72,6 +70,10 @@ public class Reservation extends AuditableAbstractAggregateRoot<Reservation> {
     private Float calculateTotalPrice(Float pricePerHour) {
         long minutes = java.time.Duration.between(startTime, endTime).toMinutes();
         return (minutes / 60.0f) * pricePerHour;
+    }
+
+    public void updateStatus(String newStatus) {
+        this.status = ReservationStatus.valueOf(newStatus.toUpperCase());
     }
 
     public void confirm() {

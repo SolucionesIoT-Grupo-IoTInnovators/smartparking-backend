@@ -6,7 +6,6 @@ import com.smartparking.backend.v1.deviceManagement.domain.model.commands.Update
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceMacAddressCommand;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public interface DeviceCommandService {
     Optional<Device> handle(CreateDeviceCommand command);

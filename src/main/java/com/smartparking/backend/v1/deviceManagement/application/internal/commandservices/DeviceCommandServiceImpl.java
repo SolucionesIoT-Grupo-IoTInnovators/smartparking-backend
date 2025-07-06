@@ -4,13 +4,11 @@ import com.smartparking.backend.v1.deviceManagement.domain.model.aggregates.Devi
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.CreateDeviceCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceMacAddressCommand;
-import com.smartparking.backend.v1.deviceManagement.domain.model.valueobjects.DeviceStatus;
 import com.smartparking.backend.v1.deviceManagement.domain.services.DeviceCommandService;
 import com.smartparking.backend.v1.deviceManagement.infrastructure.persistence.jpa.repositories.DeviceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class DeviceCommandServiceImpl implements DeviceCommandService {
@@ -23,7 +21,7 @@ public class DeviceCommandServiceImpl implements DeviceCommandService {
 
     @Override
     public Optional<Device> handle(CreateDeviceCommand command) {
-        Device device = new Device(command.parkingId(), command.parkingSpotId(), command.spotStatus(), command.spotLabel());
+        Device device = new Device(command.parkingId(), command.parkingSpotId(), command.spotStatus(), command.spotLabel(), command.edgeServerId());
         return Optional.of(deviceRepository.save(device));
     }
 

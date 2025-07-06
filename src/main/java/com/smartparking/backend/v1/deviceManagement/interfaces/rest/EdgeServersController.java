@@ -8,6 +8,7 @@ import com.smartparking.backend.v1.deviceManagement.interfaces.rest.resources.Cr
 import com.smartparking.backend.v1.deviceManagement.interfaces.rest.resources.EdgeServerResource;
 import com.smartparking.backend.v1.deviceManagement.interfaces.rest.transform.CreateEdgeServerCommandFromResourceAssembler;
 import com.smartparking.backend.v1.deviceManagement.interfaces.rest.transform.EdgeServerResourceFromEntityAssembler;
+import com.smartparking.backend.v1.deviceManagement.interfaces.rest.transform.UpdateEdgeServerMacAddressCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -66,5 +67,22 @@ public class EdgeServersController {
                 .map(EdgeServerResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
         return ResponseEntity.ok(resources);
+    }
+
+    @Operation(summary = "Update edge server mac address")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Edge server updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Edge server not found")
+    })
+    @PatchMapping("/{serverId}")
+    public ResponseEntity<EdgeServerResource> updateEdgeServerMacAddress(
+            @PathVariable Long serverId, @RequestParam String macAddress) {
+        Optional<EdgeServer> updatedEdgeServer = this.edgeServerCommandService.handle(
+                UpdateEdgeServerMacAddressCommandFromResourceAssembler.toCommandFromResource(serverId, macAddress)
+        );
+
+        return updatedEdgeServer.map(source ->
+                        ResponseEntity.ok(EdgeServerResourceFromEntityAssembler.toResourceFromEntity(source)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

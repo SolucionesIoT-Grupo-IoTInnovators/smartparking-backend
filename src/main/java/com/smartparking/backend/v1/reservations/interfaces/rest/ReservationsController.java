@@ -1,14 +1,15 @@
 package com.smartparking.backend.v1.reservations.interfaces.rest;
 
 import com.smartparking.backend.v1.reservations.domain.model.aggregates.Reservation;
-import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByParkingIdQuery;
 import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByDriverIdAndStatusQuery;
+import com.smartparking.backend.v1.reservations.domain.model.queries.GetAllReservationsByParkingIdQuery;
 import com.smartparking.backend.v1.reservations.domain.services.ReservationCommandService;
 import com.smartparking.backend.v1.reservations.domain.services.ReservationQueryService;
 import com.smartparking.backend.v1.reservations.interfaces.rest.resources.CreateReservationResource;
 import com.smartparking.backend.v1.reservations.interfaces.rest.resources.ReservationResource;
 import com.smartparking.backend.v1.reservations.interfaces.rest.transform.CreateReservationCommandFromResourceAssembler;
 import com.smartparking.backend.v1.reservations.interfaces.rest.transform.ReservationResourceFromEntityAssembler;
+import com.smartparking.backend.v1.reservations.interfaces.rest.transform.UpdateReservationCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +42,7 @@ public class ReservationsController {
             @ApiResponse(responseCode = "400", description = "Invalid request data")
     })
     @PostMapping
-    public ResponseEntity<ReservationResource> createReservation(@RequestBody CreateReservationResource resource) {
+    public ResponseEntity<ReservationResource> createReservation(@RequestBody CreateReservationResource resource) throws IOException {
         Optional<Reservation> reservation = this.reservationCommandService
                 .handle(CreateReservationCommandFromResourceAssembler.toCommandFromResource(resource));
 
@@ -88,5 +90,21 @@ public class ReservationsController {
                 .map(ReservationResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
         return ResponseEntity.ok(resources);
+    }
+
+    @Operation(summary = "Update a reservation status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reservation status updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Reservation not found")
+    })
+    @PatchMapping("/{reservationId}")
+    public ResponseEntity<ReservationResource> updateReservationStatus(
+            @PathVariable Long reservationId, @RequestParam String status) throws IOException {
+        Optional<Reservation> updatedReservation = this.reservationCommandService
+                .handle(UpdateReservationCommandFromResourceAssembler.toCommandFromResource(reservationId, status));
+
+        return updatedReservation.map(reservation ->
+                        ResponseEntity.ok(ReservationResourceFromEntityAssembler.toResourceFromEntity(reservation)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
