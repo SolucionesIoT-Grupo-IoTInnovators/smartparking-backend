@@ -55,7 +55,7 @@ public class Device extends AuditableAbstractAggregateRoot<Device> {
         this.spotStatus = SpotStatus.valueOf(spotStatus);
         this.spotLabel = spotLabel;
         this.edgeServerId = new EdgeServerId(edgeServerId);
-        this.macAddress = null;
+        this.macAddress = " ";
         this.type = DeviceType.NONE;
         this.operationalStatus = DeviceStatus.OFFLINE;
         this.lastCommunication = LocalDateTime.now();
