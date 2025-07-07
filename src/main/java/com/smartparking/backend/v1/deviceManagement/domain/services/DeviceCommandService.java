@@ -5,10 +5,11 @@ import com.smartparking.backend.v1.deviceManagement.domain.model.commands.Create
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceMacAddressCommand;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public interface DeviceCommandService {
     Optional<Device> handle(CreateDeviceCommand command);
     Optional<Device> handle(UpdateDeviceCommand command);
-    Optional<Device> handle(UpdateDeviceMacAddressCommand command);
+    Optional<Device> handle(UpdateDeviceMacAddressCommand command) throws IOException;
 }

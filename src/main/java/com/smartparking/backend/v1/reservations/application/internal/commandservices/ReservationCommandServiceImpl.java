@@ -76,10 +76,11 @@ public class ReservationCommandServiceImpl implements ReservationCommandService 
             parkingMqttService.reserveSpot(String.valueOf(reservation.getParkingSpotId()), false);
         } else if (command.status().equalsIgnoreCase("CANCELED")) {
             externalParkingService.updateParkingSpotAvailability(reservation.getParkingId(), spotId, "AVAILABLE");
-            externalParkingService.updateAvailableSpotsCount(reservation.getParkingId(), 1, "add");
+            parkingMqttService.reserveSpot(String.valueOf(reservation.getParkingSpotId()), false);
+            //externalParkingService.updateAvailableSpotsCount(reservation.getParkingId(), 1, "add");
         } else if (command.status().equalsIgnoreCase("COMPLETED")) {
             externalParkingService.updateParkingSpotAvailability(reservation.getParkingId(), spotId, "AVAILABLE");
-            externalParkingService.updateAvailableSpotsCount(reservation.getParkingId(), 1, "add");
+            //externalParkingService.updateAvailableSpotsCount(reservation.getParkingId(), 1, "add");
         }
         // Enviar notificación al propietario
         Long ownerUserId = externalParkingService.getOwnerUserIdByParkingId(reservation.getParkingId());

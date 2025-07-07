@@ -5,18 +5,22 @@ import com.smartparking.backend.v1.deviceManagement.domain.model.commands.Create
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.model.commands.UpdateDeviceMacAddressCommand;
 import com.smartparking.backend.v1.deviceManagement.domain.services.DeviceCommandService;
+import com.smartparking.backend.v1.deviceManagement.infrastructure.gateway.ParkingMqttService;
 import com.smartparking.backend.v1.deviceManagement.infrastructure.persistence.jpa.repositories.DeviceRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
 public class DeviceCommandServiceImpl implements DeviceCommandService {
 
     private final DeviceRepository deviceRepository;
+    private final ParkingMqttService parkingMqttService;
 
-    public DeviceCommandServiceImpl(DeviceRepository deviceRepository) {
+    public DeviceCommandServiceImpl(DeviceRepository deviceRepository, ParkingMqttService parkingMqttService) {
         this.deviceRepository = deviceRepository;
+        this.parkingMqttService = parkingMqttService;
     }
 
     @Override
@@ -35,11 +39,12 @@ public class DeviceCommandServiceImpl implements DeviceCommandService {
     }
 
     @Override
-    public Optional<Device> handle(UpdateDeviceMacAddressCommand command) {
+    public Optional<Device> handle(UpdateDeviceMacAddressCommand command) throws IOException {
         var device = deviceRepository.findById(command.deviceId())
                 .orElseThrow(() -> new IllegalArgumentException("Device not found"));
         device.setMacAddress(command.newMacAddress());
         var updatedDevice = deviceRepository.save(device);
+        parkingMqttService.sendDeviceListByEdgeServerId(updatedDevice.getEdgeServerId());
         return Optional.of(updatedDevice);
     }
 }
