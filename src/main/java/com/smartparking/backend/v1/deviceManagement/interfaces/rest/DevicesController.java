@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,7 +60,7 @@ public class DevicesController {
             @ApiResponse(responseCode = "404", description = "Device not found")
     })
     @PatchMapping("/{deviceId}")
-    public ResponseEntity<DeviceResource> updateDeviceMacAddress(@PathVariable Long deviceId, @RequestParam String macAddress) {
+    public ResponseEntity<DeviceResource> updateDeviceMacAddress(@PathVariable Long deviceId, @RequestParam String macAddress) throws IOException {
         Optional<Device> updatedDevice = this.deviceCommandService.handle(
                 UpdateDeviceMacAddressCommandFromResourceAssembler.toCommandFromResource(deviceId, macAddress));
         if (updatedDevice.isEmpty()) {

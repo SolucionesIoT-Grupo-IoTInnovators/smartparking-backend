@@ -7,6 +7,7 @@ import com.smartparking.backend.v1.deviceManagement.domain.model.commands.Update
 import com.smartparking.backend.v1.deviceManagement.domain.services.DeviceCommandService;
 import com.smartparking.backend.v1.deviceManagement.infrastructure.gateway.ParkingMqttService;
 import com.smartparking.backend.v1.deviceManagement.infrastructure.persistence.jpa.repositories.DeviceRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class DeviceCommandServiceImpl implements DeviceCommandService {
     private final DeviceRepository deviceRepository;
     private final ParkingMqttService parkingMqttService;
 
-    public DeviceCommandServiceImpl(DeviceRepository deviceRepository, ParkingMqttService parkingMqttService) {
+    public DeviceCommandServiceImpl(DeviceRepository deviceRepository, @Lazy ParkingMqttService parkingMqttService) {
         this.deviceRepository = deviceRepository;
         this.parkingMqttService = parkingMqttService;
     }
