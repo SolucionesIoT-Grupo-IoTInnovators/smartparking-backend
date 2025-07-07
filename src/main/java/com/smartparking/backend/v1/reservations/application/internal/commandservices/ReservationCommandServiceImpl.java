@@ -74,7 +74,6 @@ public class ReservationCommandServiceImpl implements ReservationCommandService 
         var updatedReservation = reservationRepository.save(reservation);
         if (command.status().equalsIgnoreCase("CONFIRMED")) {
             parkingMqttService.reserveSpot(String.valueOf(reservation.getParkingSpotId()), false);
-            externalParkingService.updateAvailableSpotsCount(reservation.getParkingId(), 1, "subtract");
         } else if (command.status().equalsIgnoreCase("CANCELED")) {
             externalParkingService.updateParkingSpotAvailability(reservation.getParkingId(), spotId, "AVAILABLE");
             externalParkingService.updateAvailableSpotsCount(reservation.getParkingId(), 1, "add");
